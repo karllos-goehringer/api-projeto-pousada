@@ -3,11 +3,11 @@ import connection from '../../config/dbConnection.js';
 
 const router = Router();
 
-router.put('/update-comodo/:id', (req, res) => {
+router.put('/comodos/update-comodo/:comodoID', (req, res) => {
   const { id } = req.params;
   const { comodoNome } = req.body;
   connection.query(
-    'UPDATE comodos SET comodoNome = ? WHERE id = ?',
+    'UPDATE comodos SET comodoNome = ? WHERE comodoID = comodoID',
     [comodoNome, id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });

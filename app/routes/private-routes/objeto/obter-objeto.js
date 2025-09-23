@@ -2,7 +2,7 @@ import { Router } from 'express';
 import connection from '../../config/dbConnection.js';
 
 const router = Router();
-router.get('/get-objetos-comodo/:idComodo', (req, res) => {
+router.get('/objeto/get-objetos-comodo/:idComodo', (req, res) => {
   const { idComodo } = req.params;
   const query = 'SELECT * FROM objetos WHERE comodoID = ?';
   connection.query(query, [idComodo], (err, results) => {

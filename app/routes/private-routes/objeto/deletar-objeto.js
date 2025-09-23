@@ -2,7 +2,7 @@ import { Router } from 'express';
 import connection from '../../config/dbConnection.js';
 
 const router = Router();
-router.delete('/delete-objeto/:id', (req, res) => {
+router.delete('/objeto/delete-objeto/:id', (req, res) => {
   const { id } = req.params;
   connection.query(
     'DELETE FROM objetos WHERE id = ?',

@@ -2,11 +2,11 @@ import { Router } from 'express';
 import connection from '../../config/dbConnection.js';
 
 const router = Router();
-router.delete('/delete-comodo/:id', (req, res) => {
+router.delete('/comodos/delete-comodo/:comodoID', (req, res) => {
   const { id } = req.params;
 
   connection.query(
-    'DELETE FROM comodos WHERE id = ?',
+    'DELETE FROM comodos WHERE comodoID = ?',
     [id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
