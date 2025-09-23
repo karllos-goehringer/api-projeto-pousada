@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import connection from '../../config/dbConnection.js';
+import connection from '../../../../config/dbConnection.js';
 
 const router = Router();
 router.get('/delete/get-users', (req, res) => {

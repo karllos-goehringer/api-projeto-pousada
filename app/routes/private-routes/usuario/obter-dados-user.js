@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import connection from '../../config/dbConnection.js';
-
+import connection from '../../../../config/dbConnection.js';
+const router = Router();
 router.get('/user/get-user-data/:idUser', (req, res) => {
   connection.query('SELECT * FROM user WHERE id', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -8,5 +8,5 @@ router.get('/user/get-user-data/:idUser', (req, res) => {
   });
 });
 
-const router = Router();
+
 export default router;

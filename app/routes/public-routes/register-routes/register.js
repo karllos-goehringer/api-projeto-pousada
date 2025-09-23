@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import connection from '../../config/dbConnection.js';
+import connection from '../../../../config/dbConnection.js';
 
 const router = Router();
 router.post('/create-user', (req, res) => {
