@@ -1,9 +1,16 @@
 import { Router } from 'express';
 import connection from '../../../../config/dbConnection.js';
-
+import bcrypt from 'bcrypt';
+import dotenv from "dotenv";
+dotenv.config();
 const router = Router();
-router.post('/create-user', (req, res) => {
-  const { nome, senha, email } = req.body;
+router.post('/register', async (req, res) => {
+  try{
+  const { nome, senhaForm, email } = req.body;
+  if (!nome || !senhaForm || !email) {
+    return res.status(400).json({ error: 'Nome, senha e email são obrigatórios.' });
+  }
+  const senha = await bcrypt.hash(senhaForm, 10);
   const sql = `
     INSERT INTO user (nome, senha, email)
     VALUES (?, ?, ?)
@@ -15,6 +22,9 @@ router.post('/create-user', (req, res) => {
       id: result.insertId 
     });
   });
-});
-
-export default router;
+}catch (error) {
+  console.error('Erro ao registrar usuário:', error);
+  return res.status(500).json({ error: 'Erro interno no servidor.' });
+}
+})
+export default router

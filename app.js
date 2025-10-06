@@ -1,7 +1,6 @@
 import express, { json } from 'express';
 import loginRoutes from './app/routes/public-routes/login-routes/login.js';
 import registerRoute from './app/routes/public-routes/register-routes/register.js';
-import { authenticateToken } from './app/middleware/authenticateToken.js';
 import atualizarComodo from './app/routes/private-routes/comodo/atualizar-comodo.js';
 import criarComodo from './app/routes/private-routes/comodo/criar-comodo.js';
 import obterComodos from './app/routes/private-routes/comodo/obter-comodos.js';
@@ -11,50 +10,74 @@ import criarObjeto from './app/routes/private-routes/objeto/criar-objeto.js';
 import atualizarObjeto from './app/routes/private-routes/objeto/atualizar-objeto.js';
 import deletarObjeto from './app/routes/private-routes/objeto/deletar-objeto.js';
 import deletarUser from './app/routes/private-routes/usuario/deletar-user.js';
-import obterDadosAllUser from './app/routes/private-routes/usuario/obter-dados-all-user.js';
 import atualizarUser from './app/routes/private-routes/usuario/atualizar-user.js';
 import obterDadosUser from './app/routes/private-routes/usuario/obter-dados-user.js';
 import atualizarPousada from './app/routes/private-routes/pousada/atualizar-pousada.js';
 import criarPousada from './app/routes/private-routes/pousada/criar-pousada.js';
 import obterPousadas from './app/routes/private-routes/pousada/obter-pousadas.js';
 import deletarPousada from './app/routes/private-routes/pousada/deletar-pousada.js';
-import iniciarServer  from './config/server.js';
+import ping from './app/routes/public-routes/test.js';
+import iniciarServer from './config/server.js';
 import cors from 'cors';
 import { expressjwt } from 'express-jwt';
-import 'dotenv/config';
+import dotenv from 'dotenv';
 
+dotenv.config();
 function appExec() {
   const app = express();
-  console.log('tentando iniciar server');
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+  app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+  app.use(express.json());
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    console.error('ERRO: AUTHENTICATION_TOKEN_SECRET não definido no .env');
+    process.exit(1);
+  }
+  app.use(
+    expressjwt({
+      secret: jwtSecret,
+      algorithms: ['HS256']
+    }).unless({
+      path: [
+        '/auth/login',
+        '/auth/register',
+        '/teste',
+        '/test/ping',
+        { url: /\/public\//, methods: ['GET', 'POST'] }
+      ]
+    })
+  );
+  app.use('/test', ping)
+  app.use('/auth', loginRoutes);
+  app.use('/auth', registerRoute);
+  app.use('/comodo', atualizarComodo);
+  app.use('/comodo', criarComodo);
+  app.use('/comodo', obterComodos);
+  app.use('/comodo', deletarComodo);
+  app.use('/objeto', obterObjetosComodo);
+  app.use('/objeto', criarObjeto);
+  app.use('/objeto', atualizarObjeto);
+  app.use('/objeto', deletarObjeto);
+  app.use('/usuario', deletarUser);
+  app.use('/usuario', atualizarUser);
+  app.use('/usuario', obterDadosUser);
+  app.use('/pousada', atualizarPousada);
+  app.use('/pousada', criarPousada);
+  app.use('/pousada', obterPousadas);
+  app.use('/pousada', deletarPousada);
   iniciarServer(app);
-  app.use(expressjwt({
-  secret: process.env['authentication-token-secret'],
-  algorithms: ['HS256'] 
-}).unless({
-  path: ['/login', '/register'] 
-}));
-  app.use(cors());
-  app.use(json());
-  app.use(loginRoutes);
-  app.use(registerRoute);
-
-  app.use(atualizarComodo, authenticateToken);
-  app.use(criarComodo, authenticateToken);
-  app.use(obterComodos, authenticateToken);
-  app.use(deletarComodo, authenticateToken);
-  app.use(obterObjetosComodo, authenticateToken);
-  app.use(criarObjeto, authenticateToken);
-  app.use(atualizarObjeto, authenticateToken);
-  app.use(deletarObjeto, authenticateToken);
-  app.use(deletarUser, authenticateToken);
-  app.use(obterDadosAllUser, authenticateToken);
-  app.use(atualizarUser, authenticateToken);
-  app.use(obterDadosUser, authenticateToken);
-  app.use(atualizarPousada, authenticateToken);
-  app.use(criarPousada, authenticateToken);
-  app.use(obterPousadas, authenticateToken);
-  app.use(deletarPousada, authenticateToken);
-  return app;
 }
 
 appExec();

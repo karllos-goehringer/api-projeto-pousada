@@ -2,10 +2,10 @@ import { Router } from 'express';
 import connection from '../../../../config/dbConnection.js';
 
 const router = Router();
-router.delete('/delete/delete-user/:id', (req, res) => {
+router.delete('/user/delete-user/:idUser', (req, res) => {
   const { id } = req.params;
   connection.query(
-    'DELETE FROM user WHERE id = ?',
+    'DELETE FROM user WHERE idUser = ?',
     [id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
