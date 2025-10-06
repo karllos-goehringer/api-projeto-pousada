@@ -24,10 +24,8 @@ router.post("/login", (req, res) => {
     if (results.length === 0) {
       return res.status(401).json({ error: "Usuário não encontrado." });
     }
-
     const usuario = results[0];
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
     if (!senhaValida) {
       return res.status(401).json({ error: "Senha incorreta." });
     }
@@ -40,7 +38,6 @@ router.post("/login", (req, res) => {
       jwtSecret,
       { expiresIn: "1h" }
     );
-
     return res.json({
       message: "Login confirmado",
       usuario: {
@@ -53,5 +50,4 @@ router.post("/login", (req, res) => {
     });
   });
 });
-
 export default router;
