@@ -11,6 +11,14 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ error: 'Nome, senha e email são obrigatórios.' });
   }
   const senha = await bcrypt.hash(senhaForm, 10);
+
+  const buscarEmailSql = 'SELECT * FROM user WHERE email = ?';
+  connection.query(buscarEmailSql, [email], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length > 0) {
+      return res.status(400).json({ error: 'Email já está em uso.' });
+    }});
+
   const sql = `
     INSERT INTO user (nome, senha, email)
     VALUES (?, ?, ?)
