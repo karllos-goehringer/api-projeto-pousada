@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt';
 const router = Router();
 
 router.put('/user/atualizar-user/:idUser', (req, res) => {
-  const { idUser } = req.params;
+  const { idUser: PFK_userID } = req.params;
   const { email, senha, nome } = req.body;
 
   // Validações
-  if (!idUser || isNaN(idUser)) {
+  if (!PFK_userID || isNaN(PFK_userID)) {
     return res.status(400).json({ error: 'ID do usuário inválido' });
   }
 
@@ -25,7 +25,7 @@ router.put('/user/atualizar-user/:idUser', (req, res) => {
 
     connection.query(
       `UPDATE usuarios SET email = ?, senha = ?, nome = ? WHERE idUser = ?`,
-      [email, hashedPassword, nome, idUser],
+      [email, hashedPassword, nome, PFK_userID],
       (err, result) => {
         if (err) {
           if (err.code === 'ER_DUP_ENTRY') {

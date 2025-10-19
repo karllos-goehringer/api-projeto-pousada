@@ -12,7 +12,7 @@ router.post("/login", (req, res) => {
     return res.status(400).json({ error: "E-mail e senha são obrigatórios." });
   }
   const sql = `
-    SELECT idUser, nome, email, senha, adm
+    SELECT PK_userID, nome, email, senha, adm
     FROM user
     WHERE email = ?
   `;
@@ -31,9 +31,8 @@ router.post("/login", (req, res) => {
     }
     const token = jwt.sign(
       {
-        id: usuario.idUser,
+        id: usuario.PK_userID,
         email: usuario.email,
-        adm: usuario.adm,
       },
       jwtSecret,
       { expiresIn: "1h" }
@@ -41,10 +40,9 @@ router.post("/login", (req, res) => {
     return res.json({
       message: "Login confirmado",
       usuario: {
-        id: usuario.idUser,
+        id: usuario.PK_userID,
         nome: usuario.nome,
         email: usuario.email,
-        adm: usuario.adm,
       },
       token,
     });

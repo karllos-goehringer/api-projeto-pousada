@@ -6,7 +6,7 @@ router.delete('/pousada/delete-pousada/:pousadaID', (req, res) => {
   const { id } = req.params;
 
   connection.query(
-    'DELETE FROM pousada WHERE pousadaID = ?',
+    'DELETE FROM pousada WHERE PFK_pousadaID = ?',
     [id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });

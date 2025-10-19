@@ -5,7 +5,7 @@ const router = Router();
 router.delete('/user/delete-user/:idUser', (req, res) => {
   const { id } = req.params;
   connection.query(
-    'DELETE FROM user WHERE idUser = ?',
+    'DELETE FROM user WHERE PK_userID = ?',
     [id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
