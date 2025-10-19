@@ -12,14 +12,14 @@ router.post("/login", (req, res) => {
     return res.status(400).json({ error: "E-mail e senha são obrigatórios." });
   }
   const sql = `
-    SELECT PK_userID, nome, email, senha, adm
+    SELECT PK_userID, nome, email, senha
     FROM user
     WHERE email = ?
   `;
   connection.query(sql, [email], async (err, results) => {
     if (err) {
       console.error("Erro ao verificar login:", err);
-      return res.status(500).json({ error: "Erro interno no servidor." });
+      return res.status(500).json({ error: err.message });
     }
     if (results.length === 0) {
       return res.status(401).json({ error: "Usuário não encontrado." });
