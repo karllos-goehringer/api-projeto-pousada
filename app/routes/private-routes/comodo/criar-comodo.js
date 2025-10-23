@@ -3,14 +3,14 @@ import connection from '../../../../config/dbConnection.js';
 
 const router = Router();
 router.post('/comodos/create-comodo', (req, res) => {
-  const { comodoNome, comodoTipo, descComodo, capacidade, comodoStatus } = req.body;
+  const { comodoNome, comodoTipo, descComodo, capacidadePessoas, comodoStatus, PFK_pousadaID } = req.body;
 
   const sql = `
-    INSERT INTO comodos (comodoNome, comodoTipo, descComodo, capacidade, comodoStatus)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO comodos (comodoNome, comodoTipo, descComodo, capacidadePessoas, comodoStatus, PFK_pousadaID)
+    VALUES (?,?,?,?,?,?)
   `;
 
-  connection.query(sql, [comodoNome, comodoTipo, descComodo, capacidade, comodoStatus], (err, result) => {
+  connection.query(sql, [comodoNome, comodoTipo, descComodo, capacidadePessoas, comodoStatus,PFK_pousadaID], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
 
     return res.json({ 
