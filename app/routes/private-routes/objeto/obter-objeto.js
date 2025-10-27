@@ -3,9 +3,9 @@ import connection from '../../../../config/dbConnection.js';
 
 const router = Router();
 router.get('/objeto/get-objetos-comodo/:idComodo', (req, res) => {
-  const { idComodo } = req.params;
-  const query = 'SELECT * FROM objetos WHERE comodoID = ?';
-  connection.query(query, [idComodo], (err, results) => {
+  const { PK_comodoID } = req.params.idComodo;
+  const query = 'SELECT * FROM objetos WHERE PK_comodoID = ?';
+  connection.query(query, [PK_comodoID], (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
