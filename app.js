@@ -72,7 +72,7 @@ function appExec() {
   app.use('/comodo', criarComodo);
   app.use('/comodo', obterComodos);
   app.use('/comodo', deletarComodo);
-  app.use('/objeto', obterObjetosComodo);
+  app.use('/get', obterObjetosComodo);
   app.use('/objeto', criarObjeto);
   app.use('/objeto', atualizarObjeto);
   app.use('/objeto', deletarObjeto);
