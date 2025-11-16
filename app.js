@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import loginRoutes from './app/routes/public-routes/login-routes/login.js';
 import registerRoute from './app/routes/public-routes/register-routes/register.js';
+import refreshTokenRoute from './app/routes/public-routes/refresh-token.js';
 import atualizarComodo from './app/routes/private-routes/comodo/atualizar-comodo.js';
 import criarComodo from './app/routes/private-routes/comodo/criar-comodo.js';
 import obterComodos from './app/routes/private-routes/comodo/obter-comodos.js';
@@ -17,6 +18,7 @@ import criarPousada from './app/routes/private-routes/pousada/criar-pousada.js';
 import obterPousadas from './app/routes/private-routes/pousada/obter-pousadas.js';
 import deletarPousada from './app/routes/private-routes/pousada/deletar-pousada.js';
 import ping from './app/routes/public-routes/test.js';
+import { refreshTokenMiddleware } from './app/middleware/tokenRefresh.js';
 import iniciarServer from './config/server.js';
 import cors from 'cors';
 import { expressjwt } from 'express-jwt';
@@ -59,20 +61,25 @@ function appExec() {
       path: [
         '/auth/login',
         '/auth/register',
+        '/auth/refresh',
         '/teste',
         '/test/ping',
         { url: /\/public\//, methods: ['GET', 'POST'] }
       ]
     })
   );
+  
+  app.use(refreshTokenMiddleware);
+  
   app.use('/test', ping)
   app.use('/auth', loginRoutes);
   app.use('/auth', registerRoute);
+  app.use('/auth', refreshTokenRoute);
   app.use('/comodo', atualizarComodo);
   app.use('/comodo', criarComodo);
   app.use('/comodo', obterComodos);
   app.use('/comodo', deletarComodo);
-  app.use('/get', obterObjetosComodo);
+  app.use('/objeto', obterObjetosComodo);
   app.use('/objeto', criarObjeto);
   app.use('/objeto', atualizarObjeto);
   app.use('/objeto', deletarObjeto);

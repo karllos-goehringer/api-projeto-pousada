@@ -76,4 +76,27 @@ router.put('/pousada-update-contato/:id', (req, res) => {
   })
 });
 
+router.put('/pousada-update-nome/:id',(req,res)=>{
+  const PFK_pousadaID = req.params.id;
+  const {pousadaNome} = req.body
+  if (!pousadaNome) {
+    return res.status(400).json({ error: "O nome da pousada é obrigatório" });
+  }
+  const sql = `
+    UPDATE pousada
+    SET nomePousada = ?
+    WHERE PK_pousadaID = ?
+  `;
+  connection.query(sql, [pousadaNome, PFK_pousadaID], (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar nome da pousada:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json({ 
+      message: "Nome da pousada atualizado com sucesso",
+      affectedRows: result.affectedRows 
+    });
+})
+});
+    
 export default router;
