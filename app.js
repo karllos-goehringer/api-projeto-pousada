@@ -1,7 +1,8 @@
-import express, { json } from 'express';
+import express from 'express';
 import loginRoutes from './app/routes/public-routes/login-routes/login.js';
 import registerRoute from './app/routes/public-routes/register-routes/register.js';
 import refreshTokenRoute from './app/routes/public-routes/refresh-token.js';
+import verifySessionRoute from './app/routes/public-routes/verify-session.js';
 import atualizarComodo from './app/routes/private-routes/comodo/atualizar-comodo.js';
 import criarComodo from './app/routes/private-routes/comodo/criar-comodo.js';
 import obterComodos from './app/routes/private-routes/comodo/obter-comodos.js';
@@ -42,6 +43,7 @@ function appExec() {
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
     console.error('ERRO: AUTHENTICATION_TOKEN_SECRET não definido no .env');
@@ -50,31 +52,31 @@ function appExec() {
   app.use(
     expressjwt({
       secret: jwtSecret,
-      algorithms: ['HS256'],
-      getToken: (req) => {
-      if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        return req.headers.authorization.split(' ')[1];
-      }
-      return null;
-    }
-  }).unless({
+      algorithms: ['HS256']
+    }).unless({
       path: [
         '/auth/login',
         '/auth/register',
         '/auth/refresh',
+        '/auth/verify',
         '/teste',
         '/test/ping',
-        { url: /\/public\//, methods: ['GET', 'POST'] }
+        { url: /\/public\//, methods: ['GET', 'POST'] },
+        { url: /^\/uploads\/.*/, methods: ["GET"] },
+        
       ]
     })
   );
-  
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(refreshTokenMiddleware);
   
+  app.use("/uploads", express.static("uploads"));
   app.use('/test', ping)
   app.use('/auth', loginRoutes);
   app.use('/auth', registerRoute);
   app.use('/auth', refreshTokenRoute);
+  app.use('/auth', verifySessionRoute);
   app.use('/comodo', atualizarComodo);
   app.use('/comodo', criarComodo);
   app.use('/comodo', obterComodos);
