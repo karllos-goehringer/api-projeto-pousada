@@ -5,10 +5,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = Router();
 const jwtSecret = process.env.JWT_SECRET;
-// GET /auth/verify
-// Verifica o token enviado no header Authorization: Bearer <token>
-// Se válido: retorna { valid: true, user: { id, email }, token?: <newToken> }
-// Se inválido/ausente: retorna { valid: false }
 router.get('/verify', (req, res) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

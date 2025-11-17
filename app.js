@@ -18,6 +18,7 @@ import atualizarPousada from './app/routes/private-routes/pousada/atualizar-pous
 import criarPousada from './app/routes/private-routes/pousada/criar-pousada.js';
 import obterPousadas from './app/routes/private-routes/pousada/obter-pousadas.js';
 import deletarPousada from './app/routes/private-routes/pousada/deletar-pousada.js';
+import verificacao from './app/routes/private-routes/verificacao/verificacao.js'
 import ping from './app/routes/public-routes/test.js';
 import { refreshTokenMiddleware } from './app/middleware/tokenRefresh.js';
 import iniciarServer from './config/server.js';
@@ -70,9 +71,9 @@ function appExec() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(refreshTokenMiddleware);
-  
   app.use("/uploads", express.static("uploads"));
-  app.use('/test', ping)
+  app.use('/comodo',verificacao);
+  app.use('/test', ping);
   app.use('/auth', loginRoutes);
   app.use('/auth', registerRoute);
   app.use('/auth', refreshTokenRoute);
