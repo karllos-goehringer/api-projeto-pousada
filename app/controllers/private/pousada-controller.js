@@ -115,7 +115,7 @@ class PousadaController {
     try {
       const {
         nomePousada,
-        idUser,
+        userId,
         rua,
         bairro,
         cidade,
@@ -128,7 +128,7 @@ class PousadaController {
    
       const dadosPousada = {
         nomePousada,
-        idUser,
+        userId,
         rua,
         bairro,
         cidade,
@@ -138,9 +138,7 @@ class PousadaController {
         telefoneAlternativo: telefoneAlternativo || { bandeira: '', prefixoRegional: '', numero: '' },
         email
       };
-
       const resultado = await PousadaModel.cadastrarPousada(dadosPousada);
-
       res.status(201).json({
         message: 'Pousada cadastrada com sucesso',
         pousadaID: resultado.pousadaID,

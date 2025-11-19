@@ -127,7 +127,7 @@ class PousadaModel{
     return new Promise((resolve, reject) => {
       const {
         nomePousada,
-        idUser,
+        userId,
         rua,
         bairro,
         cidade,
@@ -137,11 +137,9 @@ class PousadaModel{
         telefoneAlternativo,
         email
       } = dadosPousada;
-
       connection.beginTransaction(err => {
         if (err) return reject(err);
-
-        this.inserirPousada(nomePousada, idUser)
+        this.inserirPousada(nomePousada, userId)
           .then(resultPousada => {
             const pousadaID = resultPousada.insertId;
             return Promise.all([
@@ -171,10 +169,10 @@ class PousadaModel{
     });
   }
 
-  inserirPousada(nomePousada, idUser) {
+  inserirPousada(nomePousada, userId) {
     return new Promise((resolve, reject) => {
       const sql = "INSERT INTO pousada (nomePousada, PFK_userID) VALUES (?, ?)";
-      connection.query(sql, [nomePousada, idUser], (err, result) => {
+      connection.query(sql, [nomePousada, userId], (err, result) => {
         if (err) return reject(err);
         resolve(result);
       });
