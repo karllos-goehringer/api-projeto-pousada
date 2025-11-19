@@ -1,25 +1,16 @@
 import express from 'express';
-import loginRoutes from './app/routes/public-routes/login-routes/login.js';
-import registerRoute from './app/routes/public-routes/register-routes/register.js';
-import refreshTokenRoute from './app/routes/public-routes/refresh-token.js';
-import verifySessionRoute from './app/routes/public-routes/verify-session.js';
-import atualizarComodo from './app/routes/private-routes/comodo/atualizar-comodo.js';
-import criarComodo from './app/routes/private-routes/comodo/criar-comodo.js';
-import obterComodos from './app/routes/private-routes/comodo/obter-comodos.js';
-import deletarComodo from './app/routes/private-routes/comodo/deletar-comodo.js';
-import obterObjetosComodo from './app/routes/private-routes/objeto/obter-objeto.js';
-import criarObjeto from './app/routes/private-routes/objeto/criar-objeto.js';
-import atualizarObjeto from './app/routes/private-routes/objeto/atualizar-objeto.js';
-import deletarObjeto from './app/routes/private-routes/objeto/deletar-objeto.js';
-import deletarUser from './app/routes/private-routes/usuario/deletar-user.js';
-import atualizarUser from './app/routes/private-routes/usuario/atualizar-user.js';
-import obterDadosUser from './app/routes/private-routes/usuario/obter-dados-user.js';
-import atualizarPousada from './app/routes/private-routes/pousada/atualizar-pousada.js';
-import criarPousada from './app/routes/private-routes/pousada/criar-pousada.js';
-import obterPousadas from './app/routes/private-routes/pousada/obter-pousadas.js';
-import deletarPousada from './app/routes/private-routes/pousada/deletar-pousada.js';
-import verificacao from './app/routes/private-routes/verificacao/verificacao.js'
-import ping from './app/routes/public-routes/test.js';
+import userRoutes from './app/routes/private/usuario-routes.js'
+import comodoRoutes from "./app/routes/private/comodo-routes.js";
+import objetoRoutes from "./app/routes/private/objeto-routes.js";
+import pousadaRoutes from "./app/routes/private/pousada-routes.js";
+import verificacaoRoutes from "./app/routes/private/verificacao-routes.js";
+
+import loginRoute from "./app/routes/public/login-route.js";
+import refreshRoute from "./app/routes/public/refresh-token-route.js";
+import registerRoute from "./app/routes/public/register-route.js";
+import verifyRoute from "./app/routes/public/verify-session-route.js";
+import pingRoute from "./app/routes/public/test-route.js";
+
 import { refreshTokenMiddleware } from './app/middleware/tokenRefresh.js';
 import iniciarServer from './config/server.js';
 import cors from 'cors';
@@ -64,35 +55,22 @@ function appExec() {
         '/test/ping',
         { url: /\/public\//, methods: ['GET', 'POST'] },
         { url: /^\/uploads\/.*/, methods: ["GET"] },
-        
+
       ]
     })
   );
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
   app.use(refreshTokenMiddleware);
   app.use("/uploads", express.static("uploads"));
-  app.use('/comodo',verificacao);
-  app.use('/test', ping);
-  app.use('/auth', loginRoutes);
+  app.use('/test', pingRoute);
+  app.use('/auth', loginRoute);
   app.use('/auth', registerRoute);
-  app.use('/auth', refreshTokenRoute);
-  app.use('/auth', verifySessionRoute);
-  app.use('/comodo', atualizarComodo);
-  app.use('/comodo', criarComodo);
-  app.use('/comodo', obterComodos);
-  app.use('/comodo', deletarComodo);
-  app.use('/objeto', obterObjetosComodo);
-  app.use('/objeto', criarObjeto);
-  app.use('/objeto', atualizarObjeto);
-  app.use('/objeto', deletarObjeto);
-  app.use('/usuario', deletarUser);
-  app.use('/usuario', atualizarUser);
-  app.use('/usuario', obterDadosUser);
-  app.use('/pousada', atualizarPousada);
-  app.use('/pousada', criarPousada);
-  app.use('/pousada', obterPousadas);
-  app.use('/pousada', deletarPousada);
+  app.use('/auth', refreshRoute);
+  app.use('/auth', verifyRoute);
+  app.use('/comodo', verificacaoRoutes);
+  app.use('/comodo', comodoRoutes);
+  app.use('/objeto', objetoRoutes);
+  app.use('/usuario', userRoutes);
+  app.use('/pousada', pousadaRoutes);
   iniciarServer(app);
 }
 
