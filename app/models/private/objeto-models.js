@@ -1,7 +1,6 @@
 import connection from "../../../config/dbConnection.js";
 
-export default {
-  // Buscar objetos de um cômodo
+class ObjetoModel {
   getObjetosByComodo(idComodo, callback) {
     const sql = `
       SELECT PK_objID, objNome, objMarca, objUnidades, objLink, objImagem
@@ -9,7 +8,7 @@ export default {
       WHERE PFK_comodoID = ?
     `;
     connection.query(sql, [idComodo], callback);
-  },
+  }
 
   // Criar objeto
   createObjeto(data, callback) {
@@ -26,7 +25,7 @@ export default {
       data.objImagem,
     ];
     connection.query(sql, params, callback);
-  },
+  }
 
   // Atualizar objeto
   updateObjeto(id, data, callback) {
@@ -43,17 +42,19 @@ export default {
       : [data.objNome, data.objMarca, data.objUnidades, data.objLink, id];
 
     connection.query(sql, params, callback);
-  },
+  }
 
   // Buscar imagem antes de deletar
   getImagemById(id, callback) {
     const sql = "SELECT objImagem FROM objetos WHERE PK_objID = ?";
     connection.query(sql, [id], callback);
-  },
+  }
 
   // Deletar objeto
   deleteObjeto(id, callback) {
     const sql = "DELETE FROM objetos WHERE PK_objID = ?";
     connection.query(sql, [id], callback);
-  },
+  }
 };
+
+export default new ObjetoModel();

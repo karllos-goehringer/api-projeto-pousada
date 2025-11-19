@@ -1,45 +1,14 @@
 import { Router } from "express";
-import pousadaController from "../../controllers/private/pousada-controller.js";
+import PousadaController from "../../controllers/private/pousada-controller.js";
 const router = Router();
 
-router.put(
-  "/pousada-update-endereco/:id",
-  pousadaController.updateEndereco
-);
-
-router.put(
-  "/pousada-update-nome/:id",
-  pousadaController.updateNome
-);
-
-router.get(
-  "/get-pousada/:id",
-  pousadaController.getByUser
-);
-
-router.get(
-  "/get-pousada-details/:id",
-  pousadaController.getDetails
-);
-
-router.delete(
-  "/pousada/delete-pousada/:pousadaID",
-  pousadaController.delete
-);
-
-router.put(
-  "/pousada-update-contato/:id",
-  (req, res) => res.json({ message: "TODO: mover para controller de contato" })
-);
-
-router.get(
-  "/get-telefones-pousada/:idTelefone/:idTelefoneAlternativo",
-  pousadaController.getTelefonesPousada
-);
-
-router.post(
-  '/register',
-  pousadaController.cadastrarPousada
-)
+router.put( "/pousada-update-endereco/:id", PousadaController.updateEndereco);
+router.put( "/pousada-update-nome/:id", PousadaController.updateNome);
+router.get( "/get-pousada/:id", PousadaController.getByUser);
+router.get("/get-pousada-details/:id",PousadaController.getDetails);
+router.delete("/pousada/delete-pousada/:pousadaID",PousadaController.delete);
+router.put("/pousada-update-contato/:id", PousadaController.updateContato);
+router.get("/get-telefones-pousada/:idTelefone/:idTelefoneAlternativo",PousadaController.getTelefonesPousada);
+router.post('/register',PousadaController.cadastrarPousada)
 
 export default router;

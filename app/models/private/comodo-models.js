@@ -1,15 +1,15 @@
 import connection from "../../../config/dbConnection.js";
 
-export default {
+class ComodoModel {
   getComodosByPousada(idPousada, callback) {
     const sql = "SELECT * FROM comodos WHERE PFK_pousadaID = ?";
     connection.query(sql, [idPousada], callback);
-  },
+  }
 
   getComodoById(idComodo, callback) {
     const sql = "SELECT * FROM comodos WHERE PK_comodoID = ?";
     connection.query(sql, [idComodo], callback);
-  },
+  }
 
   createComodo(data, callback) {
     const sql = `
@@ -28,7 +28,7 @@ export default {
     ];
 
     connection.query(sql, valores, callback);
-  },
+  }
 
   updateComodo(comodoID, data, callback) {
     const sql = `
@@ -54,10 +54,12 @@ export default {
     ];
 
     connection.query(sql, valores, callback);
-  },
+  }
 
   deleteComodo(id, callback) {
     const sql = "DELETE FROM comodos WHERE PK_comodoID = ?";
     connection.query(sql, [id], callback);
-  },
+  }
 };
+
+export default new ComodoModel();

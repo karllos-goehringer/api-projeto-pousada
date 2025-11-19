@@ -1,6 +1,6 @@
 import connection from "../../../config/dbConnection.js";
 
-export default {
+class PousadaModel{
   updateEndereco(id, data, callback) {
     const sql = `
       UPDATE endereco
@@ -8,7 +8,61 @@ export default {
       WHERE PFK_pousadaID=?
     `;
     connection.query(sql, [...data, id], callback);
-  },
+  }
+  updateContato(PFK_pousadaID, email, telefone, telefoneAlternativo, PK_telefoneID, telefoneAltID) {
+    return new Promise((resolve, reject) => {
+      const sqlTelefone = `
+      UPDATE telefone
+      SET numBandeira = ?, numDistrital = ?, numero = ?
+      WHERE PK_telefoneID = ? AND PFK_pousadaID = ?
+    `;
+
+      const sqlTelefoneAlt = `
+      UPDATE telefone
+      SET numBandeira = ?, numDistrital = ?, numero = ?
+      WHERE PK_telefoneID = ? AND PFK_pousadaID = ?
+    `;
+
+      const sqlContato = `
+      UPDATE contato
+      SET email = ?
+      WHERE PFK_pousadaID = ?
+    `;
+
+      connection.query(
+        sqlTelefone,
+        [telefone.numBandeira, telefone.numDistrital, telefone.numero, PK_telefoneID, PFK_pousadaID],
+        (err, result) => {
+          if (err) return reject(err);
+
+          if (telefoneAlternativo && telefoneAltID) {
+            connection.query(
+              sqlTelefoneAlt,
+              [
+                telefoneAlternativo.numBandeira,
+                telefoneAlternativo.numDistrital,
+                telefoneAlternativo.numero,
+                telefoneAltID,
+                PFK_pousadaID,
+              ],
+              (errAlt, resultAlt) => {
+                if (errAlt) return reject(errAlt);
+                connection.query(sqlContato, [email, PFK_pousadaID], (errEmail, resultEmail) => {
+                  if (errEmail) return reject(errEmail);
+                  resolve({ message: "Contato atualizado com sucesso" });
+                });
+              }
+            );
+          } else {
+            connection.query(sqlContato, [email, PFK_pousadaID], (errEmail, resultEmail) => {
+              if (errEmail) return reject(errEmail);
+              resolve({ message: "Contato atualizado com sucesso" });
+            });
+          }
+        }
+      );
+    });
+  }
 
   updateNome(id, nome, callback) {
     const sql = `
@@ -17,12 +71,12 @@ export default {
       WHERE PK_pousadaID = ?
     `;
     connection.query(sql, [nome, id], callback);
-  },
+  }
 
   getPousadaByUser(id, callback) {
     const sql = `SELECT * FROM pousada WHERE PFK_userID = ?`;
     connection.query(sql, [id], callback);
-  },
+  }
 
   getPousadaDetails(id) {
     return {
@@ -43,14 +97,14 @@ export default {
         [id]
       ),
     };
-  },
+  }
 
   delete(id, callback) {
     const sql = `DELETE FROM pousada WHERE PK_pousadaID = ?`;
     connection.query(sql, [id], callback);
-  },
-  
-  getTelefones(idTelefone, idTelefoneAlternativo){
+  }
+
+  getTelefones(idTelefone, idTelefoneAlternativo) {
     return new Promise((resolve, reject) => {
       const sql = `
         SELECT PK_telefoneID AS id, numBandeira, numDistrital, numero
@@ -67,8 +121,9 @@ export default {
         resolve({ telefone: telPrincipal, telefoneAlternativo: telAlternativo });
       });
     });
-  },
-    cadastrarPousada(dadosPousada) {
+  }
+
+  cadastrarPousada(dadosPousada) {
     return new Promise((resolve, reject) => {
       const {
         nomePousada,
@@ -114,7 +169,7 @@ export default {
           });
       });
     });
-  },
+  }
 
   inserirPousada(nomePousada, idUser) {
     return new Promise((resolve, reject) => {
@@ -124,7 +179,7 @@ export default {
         resolve(result);
       });
     });
-  },
+  }
 
   inserirEndereco(pousadaID, endereco) {
     return new Promise((resolve, reject) => {
@@ -139,7 +194,7 @@ export default {
         resolve(result);
       });
     });
-  },
+  }
 
   inserirTelefone(pousadaID, telefone) {
     return new Promise((resolve, reject) => {
@@ -154,7 +209,7 @@ export default {
         resolve(result);
       });
     });
-  },
+  }
 
   inserirContato(pousadaID, idTelPrincipal, idTelAlternativo, email) {
     return new Promise((resolve, reject) => {
@@ -170,3 +225,4 @@ export default {
     });
   }
 };
+export default new PousadaModel();

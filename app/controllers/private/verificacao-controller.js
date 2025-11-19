@@ -1,7 +1,6 @@
 import verificacaoModels from "../../models/private/verificacao-models.js";
 
 class VerificacaoController {
-
   async criarVerificacao(req, res) {
     try {
       const { PFK_comodoID } = req.params;
@@ -25,12 +24,10 @@ class VerificacaoController {
         objetosFaltantes,
         dataVerificacao
       );
-
       return res.json({
         mensagem: "Verificação salva com sucesso!",
         insertId: result.insertId
       });
-
     } catch (erro) {
       console.error("Erro interno:", erro);
       return res.status(500).json({ erro: "Erro 500: não foi possível salvar a verificação." });
